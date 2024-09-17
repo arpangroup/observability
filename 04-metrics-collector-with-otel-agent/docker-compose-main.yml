@@ -1,0 +1,124 @@
+version: '3.1'
+
+services:
+  order-service:
+    image: springapi
+    environment:
+#      OTEL_EXPORTER_OTLP_ENDPOINT: "http://opentelemetry-collector:4318"
+#      OTEL_EXPORTER_OTLP_HEADERS: "client_id=abc"
+#      OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+#      OTEL_LOGS_EXPORTER: "none"
+#      OTEL_METRICS_EXPORTER: "none"
+#      OTEL_TRACES_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "order-service"
+      #....TRACE
+      OTEL_TRACES_EXPORTER: "jaeger,zipkin"
+      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger:14250"
+      OTEL_EXPORTER_ZIPKIN_ENDPOINT: "http://zipkin:9411/api/v2/spans"
+      #....METRICS
+      OTEL_METRICS_EXPORTER: "prometheus"
+      OTEL_EXPORTER_PROMETHEUS_HOST: "0.0.0.0"
+      OTEL_EXPORTER_PROMETHEUS_PORT: "9464"
+      # Logs are disabled by default
+      OTEL_LOGS_EXPORTER: "logging"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - jaeger-all-in-one
+#      - zipkin-all-in-one
+
+
+#  collector:
+#    container_name: collector
+#    image: otel/opentelemetry-collector-contrib:0.91.0
+#    command:
+#      - --config=/etc/otelcol-contrib/otel-collector-org.yml
+#    volumes:
+#      - ./docker/collector/otel-collector-org.yml:/etc/otelcol-contrib/otel-collector-org.yml
+#    restart: always
+#    ports:
+#      - "4317" # OTLP gRPC receiver
+#      - "8889" # Prometheus exporter metrics
+#    depends_on:
+#      - loki
+#      - jaeger-all-in-one
+#      - zipkin-all-in-one
+#      - tempo
+
+
+
+#  tempo:
+#    container_name: tempo
+#    image: grafana/tempo:latest
+#    command: [ "-config.file=/etc/tempo.yml" ]
+#    volumes:
+#      - ./docker/tempo/tempo.yml:/etc/tempo.yml
+#    restart: always
+#    ports:
+#      - "4317"  # otlp grpc
+#      - "3200"  # tempo as grafana datasource
+
+
+#  loki:
+#    container_name: loki
+#    image: grafana/loki:latest
+#    command: -config.file=/etc/loki/local-config.yaml
+#    restart: always
+#    ports:
+#      - "3100"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=exemplar-storage
+      - --web.enable-remote-write-receiver
+    restart: always
+    ports:
+      - "9090:9090"
+    depends_on:
+      - order-service
+
+
+#  grafana:
+#    container_name: grafana
+#    image: grafana/grafana
+#    volumes:
+#      - ./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+#    restart: always
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - prometheus
+#      - loki
+#      - jaeger-all-in-one
+#      - zipkin-all-in-one
+#      - tempo
+
+
+  jaeger-all-in-one:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: always
+    ports:
+      - "16686:16686"
+      - "14250"
+
+  zipkin-all-in-one:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    restart: always
+    ports:
+      - "9411:9411"
+
+
+
+
+
+
+

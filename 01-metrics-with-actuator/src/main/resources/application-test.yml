@@ -1,0 +1,27 @@
+management:
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        exclude: shutdown
+        include: "*"
+  info:
+    env:
+      enabled: true
+
+
+info:
+  app:
+    encoding: 1.0
+    java:
+      source: 1.8
+      target: 1.8
+  techStack:
+    database: oracle
+    java: open jdk 8
+    rontend: react
+    spring-boot: 3.3

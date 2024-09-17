@@ -1,0 +1,100 @@
+version: '3.1'
+
+services:
+  order-service:
+#    image: springapi
+    build: ./
+    environment:
+      OTEL_SERVICE_NAME: "order-service"
+      OTEL_TRACES_EXPORTER: "zipkin"
+#      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger:14250"
+      OTEL_EXPORTER_ZIPKIN_ENDPOINT: "http://zipkin:9411/api/v2/spans"
+      OTEL_METRICS_EXPORTER: "prometheus"
+      OTEL_EXPORTER_PROMETHEUS_HOST: "0.0.0.0" # prometheus exporter: prometheus will query to this endpoint
+      OTEL_EXPORTER_PROMETHEUS_PORT: "9464"    # prometheus exporter: prometheus will query to this port
+      OTEL_LOGS_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "http://collector:4317"
+    ports:
+      - "8080:8080"
+    depends_on:
+#      - jaeger-all-in-one
+      - zipkin-all-in-one
+      - collector
+
+  collector:
+    container_name: collector
+    image: otel/opentelemetry-collector-contrib:0.91.0
+    command:
+      - --config=/etc/otelcol-contrib/otel-collector.yml
+    volumes:
+      - ./docker/collector/otel-collector.yml:/etc/otelcol-contrib/otel-collector.yml
+    restart: always
+    ports:
+      - "4317" # OTLP gRPC receiver
+#      - "8889" # Prometheus exporter metrics
+    depends_on:
+      - loki
+#      - jaeger-all-in-one
+#      - zipkin-all-in-one
+#      - tempo
+
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: always
+    ports:
+      - "3100"
+
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    restart: always
+    ports:
+      - '9090:9090'
+    depends_on:
+      - order-service
+
+
+#  jaeger-all-in-one:
+#    image: jaegertracing/all-in-one:latest
+#    container_name: jaeger
+#    environment:
+#      - COLLECTOR_OTLP_ENABLED=true
+#    restart: always
+#    ports:
+#      - "16686:16686" # Jaeger UI
+#      - "14250"       # OTLP HTTP default port (protobuf) ==> Jaeger provides an API, Otel Agent pushes traces data to this API
+
+
+
+
+  zipkin-all-in-one:
+    container_name: zipkin
+    image: openzipkin/zipkin:latest
+    restart: always
+    ports:
+      - "9411:9411"
+
+
+
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - ./docker/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    restart: always
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+#      - loki
+#      - jaeger-all-in-one
+#      - zipkin-all-in-one
+#      - tempo
