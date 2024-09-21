@@ -19,6 +19,7 @@ services:
 #      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "http://collector:4318"
       OTEL_EXPORTER_OTLP_HEADERS: "client_id=abc"
       OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"  # ["grpc", "http/protobuf", "http/json"]
+#      OTEL_EXPORTER_OTLP_PROTOCOL: "http/json"
     ports:
       - "8080:8080"
     depends_on:
@@ -28,6 +29,7 @@ services:
   collector:
     container_name: collector
 #    image: otel/opentelemetry-collector-contrib
+#    image: otel/opentelemetry-collector:latest
     image: otel/opentelemetry-collector-contrib:0.76.1
     command:
       - --config=/etc/otelcol-contrib/otel-collector.yml
@@ -39,6 +41,8 @@ services:
       - "4318:4318" # OTLP http receiver
     depends_on:
       - loki
+#      - splunk
+      - kibana
 
   loki:
     container_name: loki
@@ -47,6 +51,56 @@ services:
     restart: always
     ports:
       - "3100:3100"
+
+#  splunk:
+#    container_name: splunk
+#    image: splunk/splunk:latest
+#    environment:
+#      SPLUNK_START_ARGS: "--accept-license --no-prompt --answer-yes --gen-and-print-pass --no-telemetry"
+##      SPLUNK_START_ARGS: "--accept-license"
+#      SPLUNK_HEC_TOKEN: "00000000-0000-0000-0000-0000000000000"           # Replace with your token
+#      SPLUNK_USERNAME: "admin"
+#      SPLUNK_PASSWORD: "password"                   # Set a strong admin password
+#    restart: always
+#    ports:
+#      - "8000:8000"   # Splunk Web interface
+#      - "8088:8088"   # Splunk HEC port (HTTP Event Collector)
+#      - "9997:9997"   # Splunk TCP input
+#    volumes:
+#      - splunk-data:/opt/splunk/var
+##      - ./docker/splunk/inputs.conf:/opt/splunk/etc/system/local/inputs.conf  # Mount custom inputs.conf to disable token
+
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    environment:
+#      - discovery.type=single-node # use single-node discovery type to avoid bootstrap checks on ES startup
+#      - bootstrap.memory_lock=true
+#      - ES_JAVA_OPTS=-Xmx256m -Xms256m # Note: Elasticsearch Cluster requires significant amount of heap memory, we defined Java heap space using ES_JAVA_OPTS environment variable. Max = 8GB and Minimum = 2GB
+#      - xpack.security.enabled=false  # Disable security (no auth)
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - path.data=/usr/share/elasticsearch/data
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=password
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data/
+#      - ./docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#      - ./docker/elasticsearch/data:/usr/share/elasticsearch/data
+    #      # No external volume is used here; data will be stored within the container
+    restart: always
+    ports:
+      - "9200:9200"   # Elasticsearch HTTP API
+      - "9300:9300"
+
+
 
   prometheus:
     container_name: prometheus
@@ -68,6 +122,27 @@ services:
     ports:
       - "9411:9411"
 
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.5.0
+    environment:
+#      - ELASTICSEARCH_USERNAME=elastic
+#      - ELASTICSEARCH_PASSWORD=password
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+#      - SERVER_NAME=my-kibana
+      - XPACK_SECURITY_ENABLED=false
+#      - PATH_DATA=/usr/share/kibana/data
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200  # Connect Kibana to Elasticsearch
+      - XPACK_FLEET_PACKAGES_REGISTRY_URL=http://elasticsearch:9200  # Use local package registry
+      - xpack.fleet.registryUrl=http://package-registry.corp.net:8080
+    restart: always
+    ports:
+      - "5601:5601"   # Kibana Web UI port
+#    volumes:
+#      - ./docker/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      - elasticsearch
+
 
   grafana:
     container_name: grafana
@@ -83,3 +158,7 @@ services:
       - "3001:3000"
     depends_on:
       - prometheus
+
+volumes:
+  splunk-data:
+  elastic_data: {}

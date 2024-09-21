@@ -15,9 +15,33 @@ exporters:
     endpoint: "http://loki:3100/otlp"
     tls:
       insecure: true
+#  splunk_hec:
+#    endpoint: "http://splunk:8088/services/collector/event" # URL to a Splunk instance to send data to.
+#    token: "00000000-0000-0000-0000-0000000000000"    # Splunk HTTP Event Collector token.
+#    source: "oteltest"                         # Optional Splunk source: https://docs.splunk.com/Splexicon:Source
+##    sourcetype: "_json"                               # Optional Splunk source type: https://docs.splunk.com/Splexicon:Sourcetype
+#    sourcetype: "oteltest"
+#    index: "otelindex"                                  # Splunk index, optional name of the Splunk index targeted.
+#    max_idle_conns: 200                               # Maximum HTTP connections to use simultaneously when sending data. Defaults to 100.
+#    disable_compression: false                        # Whether to disable gzip compression over HTTP. Defaults to false.
+#    timeout: 10s                                      # HTTP timeout when sending data. Defaults to 10s.
+#    tls:
+#      insecure: true
+#      insecure_skip_verify: true
+#    telemetry:
+#      enabled: true
+  elasticsearch:
+    endpoints: ["http://elasticsearch:9200"]
+    user: "elastic"
+    password: "password"
+    index: "otel-logs-%Y.%m.%d"
+    tls:
+      insecure_skip_verify: true
+    logs_index: otel_log_index
+
 
 service:
   pipelines:
     logs:
       receivers: [otlp]
-      exporters: [otlphttp/loki]
+      exporters: [otlphttp/loki, elasticsearch]
