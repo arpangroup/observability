@@ -30,7 +30,7 @@
     </thead>
     <tbody>
         <tr>
-            <td rowspan=5>Metrics Monitoring</td>
+            <td rowspan=6>Metrics Monitoring</td>
             <td rowspan=1>
                 SpringBoot-2 + <b>Actuator</b> for Metrics + 
                 <br/><b>Micrometer</b> for Custom Metrics +
@@ -41,7 +41,10 @@
             <td rowspan=1><b>SpringBoot-3 + Actuator </b>(Micrometer included - which support Metrics & traces)</td>
         </tr>
         <tr>
-            <td rowspan=1>SpringBoot + <b>Otel Java Agent</b></td>
+            <td rowspan=1>SpringBoot + <b>Otel Java Agent</b> only for standard metrics</td>
+        </tr>
+        <tr>
+            <td rowspan=1>SpringBoot + <b>Otel Java Agent</b> + <b>Micrometer</b> for custom Metrics</td>
         </tr>
         <tr>
             <td rowspan=1>SpringBoot + <b>Otel Starter Dependency</b></td>
@@ -56,11 +59,16 @@
         </tr>
         <tr>
             <td rowspan=3>Distributed Trace</td>
-            <td>Spring Cloud Sleuth</td>
+            <td>
+                <b>Spring 2</b> + Spring Cloud <b>Sleuth</b> + <b>Zipkin</b>
+                <br/> <b>Sleuth:</b> Generate TraceId & SpanId to find execution Path Details & store in temp memory.
+                <br/><b>Not required from Spring6, Spring use Micrometer</b>
+                <br/><b>ZipkinClient:</b> It collects data from <b>Sleuth (Sampling) </b> and send to UI (Zipkin Server)
+            </td>
             <td rowspan=3>Zipkin / Jaeger / Tempo</td>
         </tr>
         <tr>
-            <td>Spring Cloud Sleuth + Brave</td>
+            <td>Spring Cloud Sleuth (Brave / OpenTelemetry)</td>
         </tr>
         <tr>
             <td>Otel Starter Dependency</td>
