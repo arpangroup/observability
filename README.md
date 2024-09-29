@@ -20,13 +20,52 @@
 
 
 ## OBSERVABILITY IN SPRING FRAMEWORK
-
-| Telemetry          | Library             | Collector       |
-|--------------------|---------------------|-----------------|
-| Metrics Monitoring | Micrometer          | Prometheus      |
-| Log Aggregation    | Logback             | Splunk / ELK    |
-| Distributed Trace  | Spring Cloud Sleuth | Jaeger / Zipkin |
-
+<table>
+    <thead>
+        <tr>
+            <th>Telemetry</th>
+            <th>Library</th>
+            <th>Collector</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=5>Metrics Monitoring</td>
+            <td rowspan=1>SpringBoot-2 + Actuator + Micrometer Dependency</td>
+            <td rowspan=1>Prometheus</td>
+        </tr>
+        <tr>
+            <td rowspan=1>SpringBoot-3 + Actuator (Micrometer included)</td>
+            <td rowspan=1>Prometheus</td>
+        </tr>
+        <tr>
+            <td rowspan=1>SpringBoot + <b>Otel Java Agent</b></td>
+            <td rowspan=3>Prometheus / Otel Collector</td>
+        </tr>
+        <tr>
+            <td rowspan=1>SpringBoot + <b>Otel Starter Dependency</b></td>
+        </tr>
+        <tr>
+            <td rowspan=1>SpringBoot + <b>Otel Starter Dependency + Micrometer </b> for custom Metrics</td>
+        </tr>
+        <tr>
+            <td>Log Aggregation</td>
+            <td> <b>SLF4J</b> : Logback / Log4J 2 </td>
+            <td>Splunk / ELK / Loki</td>
+        </tr>
+        <tr>
+            <td rowspan=3>Distributed Trace</td>
+            <td>Spring Cloud Sleuth</td>
+            <td rowspan=3>Zipkin / Jaeger / Tempo</td>
+        </tr>
+        <tr>
+            <td>Spring Cloud Sleuth + Brave</td>
+        </tr>
+        <tr>
+            <td>Otel Starter Dependency</td>
+        </tr>
+    </tbody>
+</table>
 
 ## log4j logging hierarchy order:
 
