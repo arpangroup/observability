@@ -35,7 +35,7 @@
                 SpringBoot-2 + <b>Actuator</b> for Metrics + 
                 <br/><b>Micrometer</b> for Custom Metrics +
                 <br/><b>Prometheus</b> for Prometheus representation of actuator metrics
-            <td rowspan=5>Prometheus / Otel Collector</td>
+            <td rowspan=5>Prometheus:9090 / Otel Collector</td>
         </tr>
         <tr>
             <td rowspan=1><b>SpringBoot-3 + Actuator </b>(Micrometer included - which support Metrics & traces)</td>
@@ -55,7 +55,9 @@
         <tr>
             <td>Log Aggregation</td>
             <td> <b>SLF4J</b> : Logback / Log4J 2 </td>
-            <td>Splunk / ELK / Loki</td>
+            <td>
+                Splunk:8000 / ELK:9200,5601 / Loki
+            </td>
         </tr>
         <tr>
             <td rowspan=3>Distributed Trace</td>
@@ -65,7 +67,7 @@
                 <br/><b>Not required from Spring6, Spring use Micrometer</b>
                 <br/><b>ZipkinClient:</b> It collects data from <b>Sleuth (Sampling) </b> and send to UI (Zipkin Server)
             </td>
-            <td rowspan=3>Zipkin / Jaeger / Tempo</td>
+            <td rowspan=3>Zipkin:9421 / Jaeger:16686 / Tempo:3200</td>
         </tr>
         <tr>
             <td>Spring Cloud Sleuth (Brave / OpenTelemetry)</td>
