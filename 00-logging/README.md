@@ -306,6 +306,53 @@ The `OutputStreamAppender` is the super-class of three other appenders, namely `
 </configuration>
 ````
 
+## Logback TCP appender
+````xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>YOUR-IP:PORT</destination>
+        <ringBufferSize>1024</ringBufferSize>
+        <keepAliveDuration>5 minutes</keepAliveDuration>
+        <!-- encoder is required -->
+        <!-- <encoder class="net.logstash.logback.encoder.LogstashEncoder" /> -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" >
+            <customFields>{
+                "app":"",
+                "es_id":"",
+                "es_ver":"0.02",
+                "api": "",
+                "env_name":"",
+                "app_id":"",
+                "category":"app"
+                }
+            </customFields>
+        </encoder>
+
+        <ssl>
+            <trustStore>
+                <location>file:/etc/esaas/keystore/esaas-keystore.jks</location>
+                <password>****</password>
+            </trustStore>
+            <keyStore>
+                <location>file:/etc/esaas/keystore/esaas-keystore.jks</location>
+                <password>****</password>
+            </keyStore>
+        </ssl>
+
+    </appender>
+
+    <logger name="org.hibernate" level="TRACE">
+        <appender-ref ref="STASH"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STASH"/>
+    </root>
+</configuration>
+````
+
 
 ## Other Appenders:
 - [SMTPAppender](https://logback.qos.ch/manual/appenders.html#SMTPAppender)
@@ -573,8 +620,46 @@ For this configuration, we use:
 
 
 
+## [Mask, Hide & Replace Sensitive Data In Spring Boot Logs](https://youtu.be/3YK6UZq_51E?si=5ELBDqOIIUeWemWf)
+<img src="replace_expression.jpg"/>
+<img src="replace_expression_2.jpg"/>
 
+## [Writing your own custom Layout](https://logback.qos.ch/manual/layouts.html#writingYourOwnLayout)
+````java
+public class MySampleLayout extends LayoutBase<ILoggingEvent> {
 
+  public String doLayout(ILoggingEvent event) {
+    StringBuffer sbuf = new StringBuffer(128);
+    sbuf.append(event.getTimeStamp() - event.getLoggingContextVO.getBirthTime());
+    sbuf.append(" ");
+    sbuf.append(event.getLevel());
+    sbuf.append(" [");
+    sbuf.append(event.getThreadName());
+    sbuf.append("] ");
+    sbuf.append(event.getLoggerName();
+    sbuf.append(" - ");
+    sbuf.append(event.getFormattedMessage());
+    sbuf.append(CoreConstants.LINE_SEP);
+    return sbuf.toString();
+  }
+}
+````
+Note that `MySampleLayout` extends `LayoutBase`. This class manages state common to all layout instances, such as whether the layout is started or stopped, header, footer and content type data.
+
+````xml
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+      <layout class="chapters.layouts.MySampleLayout" />
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
+````
 
 
 # FAQ:
@@ -591,6 +676,7 @@ For this configuration, we use:
 
 
 # References:
+- Latency and Throughput With Logback: https://tersesystems.com/blog/2022/10/16/latency-and-throughput-with-logback/
 - Github Repository : https://github.com/FacuRamallo/Logging-Agregation-System-ELKK
 - Further reading: https://medium.com/@facuramallo8/logging-aggregation-system-d94f60f92dd0
 - LogBack Appenders: https://logback.qos.ch/manual/appenders.html
