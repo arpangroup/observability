@@ -32,10 +32,9 @@
         <tr>
             <td rowspan=5>Metrics Monitoring</td>
             <td rowspan=1>
-                SpringBoot-2 + 
-                <br/><b>Actuator Dependency</b> for Metrics + 
-                <br/><b>Micrometer Dependency</b> for Custom Metrics +
-                <br/><b>Prometheus Dependency</b> for Prometheus representation of actuator metrics
+                SpringBoot-2 + <b>Actuator</b> for Metrics + 
+                <br/><b>Micrometer</b> for Custom Metrics +
+                <br/><b>Prometheus</b> for Prometheus representation of actuator metrics
             <td rowspan=5>Prometheus / Otel Collector</td>
         </tr>
         <tr>
