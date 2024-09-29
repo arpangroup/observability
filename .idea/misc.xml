@@ -18,6 +18,7 @@
         <option value="$PROJECT_DIR$/05-otel-java-agent-with-otel-collector/pom.xml" />
         <option value="$PROJECT_DIR$/06-metrics-collector-without-otel-dependency/pom.xml" />
         <option value="$PROJECT_DIR$/06-metrics-collector-without-otel-javaagent/pom.xml" />
+        <option value="$PROJECT_DIR$/00-logging/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
