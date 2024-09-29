@@ -35,7 +35,7 @@
                 SpringBoot-2 + <b>Actuator</b> for Metrics + 
                 <br/><b>Micrometer</b> for Custom Metrics +
                 <br/><b>Prometheus</b> for Prometheus representation of actuator metrics
-            <td rowspan=5>Prometheus:9090 / Otel Collector</td>
+            <td rowspan=6>Prometheus:9090 / Otel Collector</td>
         </tr>
         <tr>
             <td rowspan=1><b>SpringBoot-3 + Actuator </b>(Micrometer included - which support Metrics & traces)</td>
