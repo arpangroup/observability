@@ -31,16 +31,18 @@
     <tbody>
         <tr>
             <td rowspan=5>Metrics Monitoring</td>
-            <td rowspan=1>SpringBoot-2 + Actuator + Micrometer Dependency</td>
-            <td rowspan=1>Prometheus</td>
+            <td rowspan=1>
+                SpringBoot-2 + 
+                <br/><b>Actuator Dependency</b> for Metrics + 
+                <br/><b>Micrometer Dependency</b> for Custom Metrics +
+                <br/><b>Prometheus Dependency</b> for Prometheus representation of actuator metrics
+            <td rowspan=5>Prometheus / Otel Collector</td>
         </tr>
         <tr>
-            <td rowspan=1>SpringBoot-3 + Actuator (Micrometer included)</td>
-            <td rowspan=1>Prometheus</td>
+            <td rowspan=1><b>SpringBoot-3 + Actuator </b>(Micrometer included - which support Metrics & traces)</td>
         </tr>
         <tr>
             <td rowspan=1>SpringBoot + <b>Otel Java Agent</b></td>
-            <td rowspan=3>Prometheus / Otel Collector</td>
         </tr>
         <tr>
             <td rowspan=1>SpringBoot + <b>Otel Starter Dependency</b></td>
