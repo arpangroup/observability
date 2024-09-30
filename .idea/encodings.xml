@@ -11,5 +11,6 @@
     <file url="file://$PROJECT_DIR$/05-otel-java-agent-with-otel-collector/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/06-metrics-collector-without-otel-javaagent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/07-springboot3-observability/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sre-logging/src/main/java" charset="UTF-8" />
   </component>
 </project>
