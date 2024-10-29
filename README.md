@@ -1,18 +1,26 @@
 # OBSERVABILITY
-<img src="observability.jpg" width="600" height="300">
+<img src="images/observability.jpg" width="600" height="300">
 
+
+### Read:
+- [Actuator - JVM Metrics for SpringBoot](https://github.com/arpangroup/observability/tree/main/01-metrics-with-actuator)
+- [Micrometer - Vendor Neutral Facade + Custom Metrics](https://github.com/arpangroup/observability/tree/main/02-metrics-with-micrometer)
+  - Why Micrometer, although there is Actuator?
+  - What is dimensionality? [What is "High Cardinality"?](https://github.com/arpangroup/observability/tree/main/02-metrics-with-micrometer#51-what-is-high-cardinality)
+  - Should you use Java Agents to instrument your application?
+- ddfds
 
 ## PILLARS OF OBSERVABILITY
 
 
 <table style="border: none; width: 100%; ">
   <tr style="border: none">
-    <td style="border: none"><img width="200" height="200" src="observability_pillars.jpg"></td>
+    <td style="border: none"><img width="200" height="200" src="images/observability_pillars.jpg"></td>
     <td style="border: none; vertical-align: top">
         <ul>
             <li><b>Metrics: </b> numeric measurements at a moment in time</li>
-            <li><b>Logs: </b></li>
-            <li><b>Traces:  </b></li>
+            <li><b>Logs: </b> Provides insight into application-specific messages emitted by processes</li>
+            <li><b>Traces:  </b>or more precisely "distributed-traces" - are samples of casual chain of events (or transactions) between different component in a microservice system </li>
         </ul>
     </td>
   </tr>
