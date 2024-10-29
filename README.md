@@ -15,7 +15,7 @@
 
 <table style="border: none; width: 100%; ">
   <tr style="border: none">
-    <td style="border: none"><img width="320" height="200" src="images/observability_pillars.jpg"></td>
+    <td style="border: none"><img width="380" height="200" src="images/observability_pillars.jpg"></td>
     <td style="border: none; vertical-align: top">
         <ul>
             <li><b>Metrics: </b> numeric measurements at a moment in time</li>
