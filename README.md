@@ -87,38 +87,37 @@
 </table>
 
 
-````java
- public interface TeaService {
-    void makeTea(String name);
+## GETTING STARTED
+- To get start with **metrics**, visit [here]()
+  - Without Java Agent - SpringBoot2 + Actuator + Micrometer
+  - Without Java Agent - SpringBoot3 + Actuator
+  - With Java Agent - OpenTelemetry Java Agent
+  - Without Otel Java Agent, but using Spring otel dependency
+  - Collect Metrics using Prometheus
+  - Collect Metrics using OtelCollector
+- To get start with **logs**, visit [here]()
+  - SpringBoot Basic Logging concepts like: [LogFormat](), [log levels](), [File output](), [File Rotation]() etc...
+  - Logback Vs Log4J vs Log4J2
+  - Logging using **Logback**
+    - Various Logback Appenders like `ConsoleAppender`, `FileAppender`, `TCP Appender` etc...
+    - Create Custom Logback Appender
+    - Access of Spring ApplicationContext in Logback Appender
+  - Logging Using **Log4J2**
+  - Hide/Mask sensitive data in log 
+  - Log MDC
+  - Collect Log Using ELK
+  - Collect Log Using Splunk
+  - Collect Log Using OtelCollector
+- To get start with **traces**, visit [here]()
+  - Basic of Trace
+  - Traces using Zipkin & Sleuth
+  - Traces using Jaeger
+  - Traces using Grafana Tempo 
 
-    void teaLeaves();
 
-    void waters();
-}
+## References
+- https://linkedin.github.io/school-of-sre/level101/metrics_and_monitoring/observability/
+- https://github.com/prometheus/OpenMetrics/blob/main/specification/OpenMetrics.md
 
-public class DefaultTeaService implements TeaService {
-    @Override
-    void makeTea(String name) {
-        //TODO...
-    }
 
-    @Override
-    void teaLeaves() {
-        //TODO...
-    }
-}
-
-public class ObservedTeaService implements TeaService {
-    private final DefaultTeaService delegate;
-    private final ObservationRegistry observationRegistry;
-
-    @Override
-    public void makeTea(String name) {
-        Observation.createNotStarted("make.tea", observationRegistry)
-                .lowCardinalityKeyValue("name", "name")
-                .lowCardinalityKeyValue("size", size)
-                .observe(() -> delegate.makeTea());
-    }
-}
-````
 
