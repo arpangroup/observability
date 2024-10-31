@@ -12,6 +12,7 @@
         <module name="02-metrics-with-micrometer" />
         <module name="sre-logging" />
         <module name="00-logging" />
+        <module name="spring-security" />
         <module name="01-metrics-with-actuator" />
         <module name="06-metrics-collector-without-otel-javaagent" />
       </profile>
@@ -34,6 +35,7 @@
       <module name="05-otel-java-agent-with-otel-collector" options="-parameters" />
       <module name="06-metrics-collector-without-otel-javaagent" options="-parameters" />
       <module name="07-springboot3-observability" options="-parameters" />
+      <module name="spring-security" options="-parameters" />
       <module name="sre-logging" options="-parameters" />
     </option>
   </component>

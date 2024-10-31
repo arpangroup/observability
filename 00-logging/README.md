@@ -25,11 +25,17 @@ The default log output from Spring Boot resembles the following example:
 
 > Note: If you have a spring.application.name property but don’t want it logged you can set logging.include-application-name to false.
 
+## [Console Output](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.console-output)
+By default, `ERROR`-level, `WARN`-level, and `INFO`-level messages are logged. You can also enable a “debug” mode by starting your application with a --debug flag.
+````
+$ java -jar myapp.jar --debug
+````
+
 ## [File Output](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.file-output)
 ````properties
 # If both properties are set, logging.file.path is ignored and only logging.file.name is used.
-logging.file.name=
-logging.file.path=
+logging.file.name=myapp.log
+logging.file.path=C://log
 ````
 
 ## [File Rotation](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.file-rotation)
@@ -45,8 +51,48 @@ For all other logging system, you will need to configure rotation settings direc
 | logging.logback.rollingpolicy.total-size-cap    | The maximum amount of size log archives can take before being deleted. |
 | logging.logback.rollingpolicy.max-history    | The maximum number of archive log files to keep (defaults to 7).       |
 
+````properties
+logging.logback.rollingpolicy.file-name-pattern=myapp.%d{yyyy-MM-dd}.%i.gz.log
+logging.logback.rollingpolicy.max-file-size=10MB  # Daily log rotation (adjust if needed)
+logging.logback.rollingpolicy.total-size-cap=1GB  # Total log size limit
+logging.logback.rollingpolicy.max-history=7       # Keep logs for 7 days
+logging.logback.rollingpolicy.clean-history-on-start=true  # Clean up old logs on startup
+````
 
-## [Log Levels](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log-levels)
+## Customizing Log Format and Patterns
+````properties
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread/%X{userId}] %-7level %logger{20} - %msg [%file:%line]%n
+````
+
+## Handling Log File Permissions and Access Control
+Ensure that your log files are secure by setting appropriate permissions. For example:
+````properties
+# Set the owner to the application user and group
+chown appuser:appgroup /var/log/app.log
+
+# Set permissions to allow the owner to read/write, group to read, and no access for others
+chmod 640 /var/log/app.log
+````
+
+or using logback-spring.xml
+````xml
+<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>/var/log/app.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>/var/log/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder>
+        <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+    </encoder>
+    <prudent>false</prudent>
+    <fileNamePatternPermissions>rw-r-----</fileNamePatternPermissions>
+</appender>
+
+````
+
+
+## [Log Levels](https://docs.spring.io/spring-boot/reference/features/logging.html#features.logging.log-levels) (FATAL < ERROR < WARN < INFO < DEBUG < TRACE)
 All the supported logging systems can have the logger levels set in the Spring `Environment` (for example, in `application.properties`) by using `logging.level.<logger-name>=<level>` where `level` is one of TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF. The `root` logger can be configured by using `logging.level.root`.
 ````properties
 -Dlogging.level.root=warn
@@ -671,8 +717,307 @@ Note that `MySampleLayout` extends `LayoutBase`. This class manages state common
         - [Filters](https://logback.qos.ch/reasonsToSwitch.html#filters): Logback comes with a wide array of filtering capabilities going much further than what log4j 1.x has to offer. For example, let's assume that you have a business-critical application deployed on a production server. Given the large volume of transactions processed, logging level is set to WARN so that only warnings and errors are logged. Now imagine that you are confronted with a bug that can be reproduced on the production system but remains elusive on the test platform due to unspecified differences between those two environments (production/testing).
           <br/> <br/>With log4j 1.x, your only choice is to lower the logging level to DEBUG on the production system in an attempt to identify the problem. Unfortunately, this will generate large volume of logging data, making analysis difficult. More importantly, extensive logging can impact the performance of your application on the production system.
           <br/><br/>With logback, you have the option of keeping logging at the WARN level for all users except for the one user, say Alice, who is responsible for identifying the problem. When Alice is logged on, she will be logging at level DEBUG while other users can continue to log at the WARN level. This feat can be accomplished by adding 4 lines of XML to your configuration file. Search for MDCFilter in the relevant section of the manual.
-3. 
 
+##  Conditional Logging Based on Profiles
+We can configure Logback to apply different logging configurations based on the active Spring profile using the `<springProfile>` tag. This allows you to define separate logging behaviors for development, testing, and production environments.
+````xml
+<configuration>
+
+    <!-- Default profile: logs INFO level and higher to the console -->
+    <springProfile name="default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- Development profile: logs DEBUG level and higher to the console -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- Production profile: logs WARN level and higher to a file -->
+    <springProfile name="prod">
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="WARN">
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+</configuration>
+
+````
+
+## Utilizing Logback's Built-In Filtering Mechanisms
+Logback allows you to apply filters to loggers or appenders to fine-tune what gets logged. For instance, you might want to exclude `DEBUG` level logs from being written to a file while still logging `INFO` and higher levels.
+````xml
+<configuration>
+
+    <!-- File Appender with a Level Filter -->
+    <appender name="FILTERED_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/filtered-app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/filtered-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- Exclude DEBUG logs from being written to this file -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="FILTERED_FILE" />
+    </root>
+</configuration>
+````
+
+## Implementing Multiple Log Files
+For complex applications, you might want separate log files for different components: We will create two new classes MyController, and MyServices. Additionally, we will also modify the main to call these methods. We can implement separate logging mechanisms for each of these classes. The below configuration ensures that separate log files are created and different log levels are set for both.
+````java
+// Controller classs
+package com.example.demo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class MyController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyController.class);
+
+    public String controllerLog() {
+        logger.debug("This is a DEBUG message from the controller.");
+        logger.info("This is an INFO message from the controller.");
+        return "Check the controller.log for logs.";
+    }
+}
+// Service Class
+package com.example.demo;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyService.class);
+
+    public void serviceLog() {
+        logger.info("This is an INFO message from the service.");
+        logger.error("This is an ERROR message from the service.");
+    }
+}
+// LoggingApplication (main)
+package com.example.demo;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class LoggingApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(LoggingApplication.class, args);
+    }
+
+    @Bean
+    CommandLineRunner run(MyService myService, MyController myController) {
+        return args -> {
+            myService.serviceLog();
+            myController.controllerLog();  // Log from the controller as well
+        };
+    }
+}
+````
+````xml
+<configuration>
+
+    <!-- Define properties for log file names -->
+    <property name="CONTROLLER_LOG" value="controller.log" />
+    <property name="SERVICE_LOG" value="service.log" />
+
+    <!-- Define the appender for controller logs -->
+    <appender name="CONTROLLER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${CONTROLLER_LOG}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${CONTROLLER_LOG}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Define the appender for service logs -->
+    <appender name="SERVICE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${SERVICE_LOG}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${SERVICE_LOG}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Define the controller logger -->
+    <logger name="com.myapp.controllers" level="DEBUG" additivity="false">
+        <appender-ref ref="CONTROLLER_FILE" />
+    </logger>
+
+    <!-- Define the service logger -->
+    <logger name="com.myapp.services" level="INFO" additivity="false">
+        <appender-ref ref="SERVICE_FILE" />
+    </logger>
+
+    <!-- Define the root logger -->
+    <root level="ERROR">
+        <appender-ref ref="CONTROLLER_FILE" />
+        <appender-ref ref="SERVICE_FILE" />
+    </root>
+
+</configuration>
+````
+
+## Setting Up Asynchronous Logging
+Asynchronous logging improves performance by offloading log processing to a separate thread:
+````xml
+<appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender-ref ref="CONTROLLER_FILE" />
+    <appender-ref ref="SERVICE_FILE" />
+</appender>
+````
+
+
+## [Log4J vs Log4J2 vs Logback](https://logback.qos.ch/performance.html#:~:text=By%20default%2C%20log4j%201.2%20uses,ring%20buffer%20should%20favor%20log4j2.)
+
+<table>
+  <tr>
+    <td></td>
+    <td>Log4J2</td>
+    <td>Logback</td>
+  </tr>
+  <tr>
+    <td>Buffer</td>
+    <td>
+        By default:
+        <li>log4j 1.2 uses a <b>circular buffer size of 128</b> </li>
+        <li>log4j2 uses a <b>ring buffer size of 262'144 </b></li>
+    </td>
+    <td>
+        <li>logback is set to a buffer size of 256.</li>
+        <b>In principle, the much larger ring buffer should favor log4j2.</b>
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2">Performance</td>
+    <td>When comparing the performance of apache log4j synchronous logger to logback, then log4j is 25 % much faster.</td>
+    <td>When the logback is compared to logback synchronous logger, then the logback was worse in performance but only with the logback versions less than 1.2.1. Therefore the newer versions are of logback is a successor to log4j.</td>
+  </tr>
+  <tr>
+    <td>Log4j’s synchronous appender is the fastest among any other logging frameworks, but log4j’s asynchronous appender cannot resolve bugs in multithreading logging.</td>
+    <td>Logback asynchronous appender is also not recommended for multithreading logging as this also cannot debug the bugs, and logback synchronous appenders performance is less when compared to log4j.</td>
+  </tr>
+  <tr>
+    <td><a href="https://logback.qos.ch/performance.html#:~:text=By%20default%2C%20log4j%201.2%20uses,ring%20buffer%20should%20favor%20log4j2.">Benchmark</a></td>
+    <td></td>
+    <td>
+        <li>logback version 1.3-alpha10 performs about 3 times faster than log4j and about 1.6 times faster than log4j2 in case of synchronous logging. </li>
+        <li> For asynchronous logging, logback 1.3 performs 2.5 faster than log4j and 2.3 times faster than log4j2.</li>
+    </td>
+  </tr>
+  <tr>
+    <td>Configuration</td>
+    <td>
+        log4j.appender.file=org.apache.log4j.FileAppender 
+        <br/>
+        log4j.appender.file.File=app.log 
+        <br/>
+        log4j.appender.file.layout=org.apache.log4j.PatternLayout
+        <br/>
+        log4j.appender.file.layout.ConversionPattern=%d{HH:mm:ss,SSS} %-5p [%c] - %m%n
+        <br/>
+        <br/>
+        log4j.rootLogger=info, file
+        <br/>
+        # basic log level for all messages
+        <br/>
+        log4j.logger.org.hibernate=info
+        <br/>
+        <br/>
+        # SQL statements and parameters
+        <br/>
+        log4j.logger.org.hibernate.SQL=debug
+        <br/>
+        log4j.logger.org.hibernate.type.descriptor.sql=trace
+    </td>
+    <td>
+<pre>
+&lt;configuration&gt;
+    &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+        &lt;file&gt;app.log&lt;/file&gt
+        &lt;encoder&gt;
+            &lt;pattern&gt; %d{HH:mm:ss,SSS} %-5p [%c] - %m%n &lt;/pattern&gt;
+        &lt;/encoder&gt
+    &lt;/appender&gt
+    &lt;logger name="org.hibernate.SQL" level="DEBUG" /&gt;
+    &lt;logger name="org.hibernate.type.descriptor.sql" level="TRACE" /&gt;
+    &lt;root level="info" &gt;
+        &lt;appender-ref="FILE" /&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;
+ 
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td>Conclusion</td>
+    <td colspan="2">
+        <li>Logback was written by the same developer who implemented Log4j with the goal to become its successor.  It follows the same concepts as Log4j but was rewritten to improve the performance, to support SLF4J natively,</li>
+        <li>It concludes that there is no much difference in these logging frameworks based on Java applications. The log4j is less considered than logback only when there were no higher logback versions, but now logback is considered faster than log4j. Therefore we cannot recommend any java logging utility based on the performance as buffered handler implementations impact it. So there is no much difference that can be figured in log4j and logback.</li>
+    </td>
+  </tr>
+ </table>
+
+The above [benchmark](https://logback.qos.ch/performance.html#:~:text=By%20default%2C%20log4j%201.2%20uses,ring%20buffer%20should%20favor%20log4j2.) results show that throughput in synchronous logging is actually higher than that of asynchronous logging.
 
 
 # References:

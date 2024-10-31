@@ -95,9 +95,11 @@
   - Without Otel Java Agent, but using Spring otel dependency
   - Collect Metrics using Prometheus
   - Collect Metrics using OtelCollector
-- To get start with **logs**, visit [here]()
-  - SpringBoot Basic Logging concepts like: [LogFormat](), [log levels](), [File output](), [File Rotation]() etc...
-  - Logback Vs Log4J vs Log4J2
+- To get start with **logs**, visit [here](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging)
+  - SpringBoot Basic Logging concepts like: [LogFormat](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format), [log levels](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-levels), [File output](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-output), [File Rotation](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-rotation) etc...
+  - [Log4J vs Log4J2 vs Logback](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format)
+  - [Why Logback is default in Spring Boot?](https://stackoverflow.com/questions/55684592/why-is-logback-the-default-logging-framework-in-spring-boot)
+  - How to write logs in different files for error and (info debug) in another in Spring?
   - Logging using **Logback**
     - Various Logback Appenders like `ConsoleAppender`, `FileAppender`, `TCP Appender` etc...
     - Create Custom Logback Appender
@@ -114,6 +116,10 @@
   - Traces using Jaeger
   - Traces using Grafana Tempo 
 
+
+## EXAMPLES
+ - Logging using **Logback**
+ - Logging Using **Log4J2**
 
 ## References
 - https://linkedin.github.io/school-of-sre/level101/metrics_and_monitoring/observability/
