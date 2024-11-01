@@ -1,5 +1,5 @@
 
-## [Logging](https://docs.spring.io/spring-boot/reference/features/logging.html)
+## [Logging in SpringBoot](https://docs.spring.io/spring-boot/reference/features/logging.html)
 <img src="logging.png"/>
 
 Spring Boot uses [Commons Logging](https://commons.apache.org/logging) for all internal logging but leaves the underlying log implementation open.
