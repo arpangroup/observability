@@ -96,8 +96,8 @@
   - Collect Metrics using Prometheus
   - Collect Metrics using OtelCollector
 - To get start with **logs**, visit [here](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging)
-  - SpringBoot Basic Logging concepts like: [LogFormat](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format), [log levels](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-levels), [File output](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-output), [File Rotation](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-rotation) etc...
-  - [Log4J vs Log4J2 vs Logback](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format)
+  - SpringBoot Basic Logging concepts like: [LogFormat](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format), [log levels](https://github.com/arpangroup/observability/blob/otel-collector-with-log/00-logging/README-log-level.md), [File output](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-output), [File Rotation](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-rotation) etc...
+  - [Log4J vs Log4J2 vs Logback](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log4j-vs-log4j2-vs-logback)
   - [Why Logback is default in Spring Boot?](https://stackoverflow.com/questions/55684592/why-is-logback-the-default-logging-framework-in-spring-boot)
   - How to write logs in different files for error and (info debug) in another in Spring?
   - Logging using **Logback**
