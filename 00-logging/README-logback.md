@@ -87,12 +87,6 @@ Logback allows you to apply filters to loggers or appenders to fine-tune what ge
 For complex applications, you might want separate log files for different components: We will create two new classes MyController, and MyServices. Additionally, we will also modify the main to call these methods. We can implement separate logging mechanisms for each of these classes. The below configuration ensures that separate log files are created and different log levels are set for both.
 ````java
 // Controller classs
-package com.example.demo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-
 @Controller
 public class MyController {
 
@@ -105,12 +99,6 @@ public class MyController {
     }
 }
 // Service Class
-package com.example.demo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 @Service
 public class MyService {
 
@@ -122,13 +110,6 @@ public class MyService {
     }
 }
 // LoggingApplication (main)
-package com.example.demo;
-
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
 @SpringBootApplication
 public class LoggingApplication {
 
@@ -278,3 +259,46 @@ We can configure Logback to apply different logging configurations based on the 
 </configuration>
 
 ````
+
+## Different files for error and debug logs
+In Spring Boot, you can configure separate files for error and debug logs by customizing the `logback-spring.xml` file in your application. Here’s how you can set it up:
+````xml
+<configuration>
+
+    <!-- Error log appender -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/error.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- Debug log appender -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/debug.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- Root logger configuration -->
+    <root level="INFO">
+        <appender-ref ref="ERROR_FILE" />
+        <appender-ref ref="DEBUG_FILE" />
+    </root>
+
+</configuration>
+````
+ - **ERROR_FILE appender**: Logs only `ERROR` level messages to `logs/error.log`.
+ - **DEBUG_FILE appender**: Logs only `DEBUG` level messages to `logs/debug.log`.
+ - **Root logger**: Ensures both appenders receive messages but logs at their specified levels.
