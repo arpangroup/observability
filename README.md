@@ -99,12 +99,13 @@
   - SpringBoot Basic Logging concepts like: [LogFormat](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log-format), [log levels](https://github.com/arpangroup/observability/blob/otel-collector-with-log/00-logging/README-log-level.md), [File output](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-output), [File Rotation](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#file-rotation) etc...
   - [Log4J vs Log4J2 vs Logback](https://github.com/arpangroup/observability/tree/otel-collector-with-log/00-logging#log4j-vs-log4j2-vs-logback)
   - [Why Logback is default in Spring Boot?](https://stackoverflow.com/questions/55684592/why-is-logback-the-default-logging-framework-in-spring-boot)
-  - How to write logs in different files for error and (info debug) in another in Spring?
-  - Logging using **Logback**
-    - Various Logback Appenders like `ConsoleAppender`, `FileAppender`, `TCP Appender` etc...
-    - Create Custom Logback Appender
-    - Access of Spring ApplicationContext in Logback Appender
-  - Logging Using **Log4J2**
+  - [How to write logs in different files for error and (info debug) in another in Spring?](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback.md#different-files-for-error-and-debug-logs)
+  - [Conditional Logging Based on Profiles](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback.md#conditional-logging-based-on-profiles)
+  - Logging using **[Logback Configuration](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback.md)**
+    - [Logback Architecture:](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback-architecture.md) `ConsoleAppender`, `FileAppender`, `TCP Appender` etc...
+    - Create [Custom Logback Appender](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback-architecture.md#creating-a-custom-logback-appender) | [Custom Layout](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback-architecture.md#writing-your-own-custom-layout)
+    - [Access of Spring ApplicationContext in Logback Appender](https://github.com/arpangroup/observability/blob/main/00-logging/README-logback-access-context.md#access-to-spring-applicationcontext-from-a-custom-logback-appenderhow-to-call-a-spring-bean-from-a-custom-logback-appender-class)
+  - Logging Using **[Log4J2](https://github.com/arpangroup/observability/blob/main/00-logging/README-log4j.md)**
   - Hide/Mask sensitive data in log 
   - Log MDC
   - Collect Log Using ELK
