@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/00-logging/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/01-metrics-with-actuator/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/02-metrics-with-micrometer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/03-metrics-collector-with-prometheus_back/src/main/java" charset="UTF-8" />
@@ -8,6 +9,9 @@
     <file url="file://$PROJECT_DIR$/04-metrics-collector-with-otel-agent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/04-metrics-collector-with-otel/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/05-otel-java-agent-with-otel-collector/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/06-metrics-collector-without-otel-javaagent/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/07-springboot3-observability/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-security/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sre-logging/src/main/java" charset="UTF-8" />
   </component>
 </project>

@@ -11,6 +11,17 @@ green { color: Green }
 **Actuator:** Device for converting energy(often electrical, hydraulic etc.) into motion.<br/>
 **Micrometer:** Instrument for precise measurement of small distances.
 
+### Micrometer is used by Spring Boot Actuator to expose application metrics because it offers several benefits, including:
+
+- **Monitoring system switching:** 
+  <br/>Micrometer allows developers to switch between monitoring systems without changing their code.
+    
+- **Rich metric collection:** 
+  <br/>Micrometer provides a wide range of metric types, including gauges, counters, timers, and distribution summaries.
+- **Conditional metric collection:** 
+  <br/>Micrometer's facade design allows developers to dynamically turn metrics on or off based on the deployment environment.
+
+
  - **Think of it like SLF4J, but for metrics** - a simple `facade` to integrate actuator metrics with external monitoring systems.
  - Micrometer is a <red>dimensional-first</red> metrics collection facade A metrics collection library that provides a facade over various monitoring systems.
  - Micrometer is used by Actuator under the hood **to expose metrics about your application**.

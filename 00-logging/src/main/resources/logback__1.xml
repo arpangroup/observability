@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<configuration debug="true" scan="true" scanPeriod="2 seconds">
+
+    <!-- ############################### Including Console Appender ###############################  -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+<!--             <pattern> %d{yyy-MM-dd HH:mm:ss} {%thread} %-5level %logger&#45;&#45; %msg %n %ex </pattern> -->
+            <!-- MASKED -->
+            <pattern> %d{yyy-MM-dd HH:mm:ss} {%thread} %-5level %logger-- %replace(%replace(%msg){REGULAR_EXPRESSION}) %n %ex </pattern>
+        </layout>
+    </appender>
+
+    <!-- LOG everything at INFO level  -->
+    <root level="trace">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!-- ############################### Including Console Appender ###############################  -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${log-path}/${file-name}.%i.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- maximum file Rolling file size  -->
+            <maxFileSize>5MB</maxFileSize>
+            <!-- keep 30 days worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern> %d{yyy-MM-dd HH:mm:ss} {%thread} %-5level %logger-- %msg %n %ex </pattern>
+        </encoder>
+    </appender>
+
+    <root level="info" additivity="false">
+        <appender-ref ref="FILE" />
+    </root>
+
+
+</configuration>

@@ -117,10 +117,12 @@ management.server.port=8081
 
 ## 1.7. [Configuring Management-specific SSL](https://docs.spring.io/spring-boot/reference/actuator/monitoring.html#actuator.monitoring.management-specific-ssl)
 ````properties
+# Here both the main server and the management server can use SSL but with different key stores, as follows:
 server.port=8443
 server.ssl.enabled=true
 server.ssl.key-store=classpath:main.jks
 server.ssl.key-password=secret
+
 management.server.port=8080
 management.server.ssl.enabled=true
 management.server.ssl.key-store=classpath:management.jks

@@ -10,48 +10,48 @@ datasources:
     basicAuth: false
     isDefault: false
     version: 1
-    editable: false
+    editable: true  #we need edit the datasource of prometheus as we need to add the exemplar
     jsonData:
       httpMethod: GET
-#      exemplarTraceIdDestinations:
-#        - datasourceUid: tempo
-#          name: trace_id
+      exemplarTraceIdDestinations:
+        - datasourceUid: tempo
+          name: trace_id
 
 
-#  - name: Loki
-#    type: loki
-#    uid: loki
-#    access: proxy
-#    orgId: 1
-#    url: http://loki:3100
-#    basicAuth: false
-#    isDefault: false
-#    version: 1
-#    editable: false
+  - name: Loki
+    type: loki
+    uid: loki
+    access: proxy
+    orgId: 1
+    url: http://loki:3100
+    basicAuth: false
+    isDefault: false
+    version: 1
+    editable: false
 
 
-#  - name: Tempo
-#    type: tempo
-#    access: proxy
-#    orgId: 1
-#    url: http://tempo:3200
-#    basicAuth: false
-#    isDefault: true
-#    version: 1
-#    editable: false
-#    apiVersion: 1
-#    uid: tempo
-#    jsonData:
-#      httpMethod: GET
-#      serviceMap:
-#        datasourceUid: prometheus
-#      tracesToLogsV2:
-#        datasourceUid: loki
-#        spanStartTimeShift: '-1h'
-#        spanEndTimeShift: '1h'
-#        filterByTraceID: true
-#        filterBySpanID: true
-#        tags: [ { key: 'service.name', value: 'job' } ]
+  - name: Tempo
+    type: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false
+    apiVersion: 1
+    uid: tempo
+    jsonData:
+      httpMethod: GET
+      serviceMap:
+        datasourceUid: prometheus
+      tracesToLogsV2:
+        datasourceUid: loki
+        spanStartTimeShift: '-1h'
+        spanEndTimeShift: '1h'
+        filterByTraceID: true
+        filterBySpanID: true
+        tags: [ { key: 'service.name', value: 'job' } ]
 
 
 #  - name: Jaeger
