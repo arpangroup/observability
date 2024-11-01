@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class DefaultMasker implements MaskerFunction{
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultMasker.class);
-    private char maskCharacter = Masked. MASK_DEFAULT; private int maskLength = Masked.MASK_LENGTH_DEFAULT;
+    private char maskCharacter = Masked. MASK_DEFAULT;
+    private int maskLength = Masked.MASK_LENGTH_DEFAULT;
     private int exposedSuffixLength = Masked. EXPOSED_SUFFIX_LENGTH_DEFAULT;
     private boolean maskEntireShortValue = Masked.MASK_ENTIRE_SHORT_VALUE_DEFAULT;
 
